@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.security.SecureRandom;
 
 import javax.annotation.Nullable;
 
@@ -71,6 +72,8 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
     public static final String RCT_CAMERA_CAPTURE_QUALITY_480P = "480p";
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
+
+    private static final SecureRandom random = new SecureRandom();
 
     private static ReactApplicationContext _reactContext;
     private RCTSensorOrientationChecker _sensorOrientationChecker;
@@ -790,14 +793,19 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
 
     private File getTempMediaFile(int type) {
         try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            long n = random.nextLong();
+            if (n == Long.MIN_VALUE) {
+                n = 0;      // corner case
+            } else {
+                n = Math.abs(n);
+            }
             File outputDir = _reactContext.getCacheDir();
             File outputFile;
 
             if (type == MEDIA_TYPE_IMAGE) {
-                outputFile = File.createTempFile("IMG_" + timeStamp, ".jpg", outputDir);
+                outputFile = File.createTempFile("IMG_" + Long.toString(n), ".jpg", outputDir);
             } else if (type == MEDIA_TYPE_VIDEO) {
-                outputFile = File.createTempFile("VID_" + timeStamp, ".mp4", outputDir);
+                outputFile = File.createTempFile("VID_" + Long.toString(n), ".mp4", outputDir);
             } else {
                 Log.e(TAG, "Unsupported media type:" + type);
                 return null;
