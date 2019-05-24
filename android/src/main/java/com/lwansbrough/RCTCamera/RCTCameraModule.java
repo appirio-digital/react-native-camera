@@ -430,8 +430,8 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
             return;
         }
 
-        f.setReadable(true, false); // so mediaplayer can play it
-        f.setWritable(true, false); // so can clean it up
+        // f.setReadable(true, false); // so mediaplayer can play it
+        // f.setWritable(true, false); // so can clean it up
 
         WritableMap response = new WritableNativeMap();
         switch (mRecordingOptions.getInt("target")) {
